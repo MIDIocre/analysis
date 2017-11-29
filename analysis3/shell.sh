@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# data processing
 ls midis/ | while read x; do echo "echo -ne \"$x\\t\"; midicsv midis/\"$x\" | grep Note_ | sort -nk2 | sed 's/, /\t/g' | ./list6.py | tail -1"; done | parallel -k > sumout
 
 # just an estimate of how long processing ....
@@ -19,10 +20,13 @@ cut -f1 clean.out | while read x; do echo -ne "$x\t"; grep -F "$x" dic | tr '\n'
 
 # manually check lines with "@"
 awk -F'\t' '{if (NF!=4) print}' names.out   # clearly, special characters are messing around with a lot of things
-awk -F'\t' '{if (NF!=4) print}' names.out | sed 's/[ÅîäÑçó ]/#/g' | grep -v "#" # this does not work consistently. These stupid special charaters just has to be done manually
+awk -F'\t' '{if (NF!=4) print}' names.out | sed 's/[ÅîäÑçó ]/#/g' | grep -v "#" # this does not work consistently. These special charaters just has to be done manually
 # end manual part
 
-(cat head; paste names.out clean.out) > SUMMARY.out
+# generate final file
+(cat head; paste names.out clean.out) | gzip > SUMMARY.out.gz
 awk -F'\t' '{ print NF}' SUMMARY.out | uniq # final check
 
+rm sumout
+rm clean.out
 
