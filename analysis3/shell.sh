@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # data processing
-ls midis/ | while read x; do echo "echo -ne \"$x\\t\"; midicsv midis/\"$x\" | grep Note_ | sort -nk2 | sed 's/, /\t/g' | ./list6.py | tail -1"; done | parallel -k > sumout
+ls midis/ | while read x; do echo "echo -ne \"$x\\t\"; midicsv midis/\"$x\" | grep Note_ | sort -nk2 | sed 's/, /\t/g' | ./Processing.py | tail -1"; done | parallel -k > sumout
 
 # just an estimate of how long processing ....
 for i in {1..20}; do date +'%s' | tr '\n' '\t'; wc -l sumout; sleep 5; done > timing  # calculated as about 30 min for all files
